@@ -16,7 +16,7 @@ The procedure is divided into different steps, corresponding to the tabs.
     clustering
     grid_routing
     microgrid_sizing
-    NPC_analysis
+    npc_analysis
 
 To procede in the steps the first time it is run, it is necessary to start from the beginning and in each tab, after selecting the proper options and loading the neccessary files press the button *run*. This make the code process the data and provide some output for the step in analysis. After output are created and loaded it is possible to press the button *next* and go to the following step.
 
