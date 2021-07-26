@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Download and installation &#8212; Gisele 1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Welcome to Gisele’s documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="download-and-installation">
+<span id="installation"></span><h1>Download and installation<a class="headerlink" href="#download-and-installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>Calliope has been tested on Linux, macOS, and Windows.</p>
+<p>Running Calliope requires four things:</p>
+<ol class="arabic simple">
+<li><p>The Python programming language, version 3.7 or higher.</p></li>
+<li><p>A number of Python add-on modules .</p></li>
+<li><p>A solver: Calliope has been tested with CBC, GLPK, Gurobi, and CPLEX. Any other solver that is compatible with Pyomo should also work.</p></li>
+<li><p>The Calliope software itself.</p></li>
+</ol>
+</div>
+<div class="section" id="recommended-installation-method">
+<h2>Recommended installation method<a class="headerlink" href="#recommended-installation-method" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to get a working Calliope installation is to use the free <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager, which can install all of the four things described above in a single step.</p>
+<p>To get <code class="docutils literal notranslate"><span class="pre">conda</span></code>, <a class="reference external" href="https://conda.io/miniconda.html">download and install the “Miniconda” distribution for your operating system</a> (using the version for Python 3).</p>
+<p>With Miniconda installed, you can create a new environment called <code class="docutils literal notranslate"><span class="pre">&quot;calliope&quot;</span></code> with all the necessary modules, including the free and open source GLPK solver, by running the following command in a terminal or command-line window</p>
+<blockquote>
+<div><div class="highlight-fishshell notranslate"><div class="highlight"><pre><span></span><span class="nv">$ </span>conda create -c conda-forge -n calliope calliope
+</pre></div>
+</div>
+</div></blockquote>
+<p>To use Calliope, you need to activate the <code class="docutils literal notranslate"><span class="pre">calliope</span></code> environment each time</p>
+<blockquote>
+<div><div class="highlight-fishshell notranslate"><div class="highlight"><pre><span></span><span class="nv">$ </span>conda activate calliope
+</pre></div>
+</div>
+</div></blockquote>
+<p>You are now ready to use Calliope together with the free and open source GLPK solver. However, we recommend to not use this solver where possible, since it performs relatively poorly (both in solution time and stability of result). Indeed, our example models use the free and open source CBC solver instead, but installing it on Windows requires an extra step. Read the next section for more information on installing alternative solvers.</p>
+</div>
+<div class="section" id="updating-an-existing-installation">
+<h2>Updating an existing installation<a class="headerlink" href="#updating-an-existing-installation" title="Permalink to this headline">¶</a></h2>
+<p>If following the recommended installation method above, the following command, assuming the conda environment is active, will update Calliope to the newest version</p>
+<blockquote>
+<div><div class="highlight-fishshell notranslate"><div class="highlight"><pre><span></span><span class="nv">$ </span>conda update -c conda-forge calliope
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="solvers">
+<span id="install-solvers"></span><h2>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">¶</a></h2>
+<p>You need at least one of the solvers supported by Pyomo installed. CBC (open-source) or Gurobi (commercial) are recommended for large problems, and have been confirmed to work with Calliope. Refer to the documentation of your solver on how to install it.</p>
+<div class="section" id="cbc">
+<h3>CBC<a class="headerlink" href="#cbc" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://projects.coin-or.org/Cbc">CBC</a> is our recommended option if you want a free and open-source solver. CBC can be installed via conda on Linux and macOS by running <code class="docutils literal notranslate"><span class="pre">`conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">coincbc`</span></code>. Windows binary packages are somewhat more difficult to install, due to limited information on <a class="reference external" href="https://projects.coin-or.org/Cbc">the CBC website</a>. We recommend you download the relevant binary for <a class="reference external" href="https://bintray.com/coin-or/download/Cbc/2.9.9">CBC 2.9.9</a> and add <cite>cbc.exe</cite> to a directory known to PATH (e.g. an Anaconda environment ‘bin’ directory).</p>
+<p>GLPK</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Gisele</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Download and installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recommended-installation-method">Recommended installation method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-an-existing-installation">Updating an existing installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solvers">Solvers</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to Gisele’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Silvia Corigliano, Darlain Edeme, Tommaso Carnovali, Vinicius Gadelha, Marco Merlo,.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/user/introduction.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
