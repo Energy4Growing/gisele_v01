@@ -7,7 +7,6 @@ Welcome to Gisele's documentation!
 ==================================
 
 .. toctree::
-   :maxdepth: 3
    :caption: Contents:
 
    user/introduction
