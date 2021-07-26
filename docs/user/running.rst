@@ -11,7 +11,7 @@ By clicking on the link that appears, a window in the browser opens at the addre
 The procedure is divided into different steps, corresponding to the tabs.
 
 .. toctree::
-   :maxdepth: 2
+  :numbered:
 
     geospatial_data_processing
     clustering
