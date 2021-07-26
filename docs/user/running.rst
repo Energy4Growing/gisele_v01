@@ -12,6 +12,7 @@ The procedure is divided into different steps, corresponding to the tabs.
 
 .. toctree::
    :maxdepth: 2
+
     geospatial_data_processing
     clustering
     grid_routing
