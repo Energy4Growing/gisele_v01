@@ -1,0 +1,9 @@
+This is the list of Gisele contributors for copyright purposes
+
+Aleksandar Dimovski: Politecnico di Milano <aleksandar.dimovski@polimi.it>
+Darlain Edeme: Politecnico di Milano < darlain.edeme@polimi.it>
+Marina Petrelli: Politecnico di Milano <marina.petrelli@polimi.it>
+Silvia Corigliano: Politecnico di Milano <silvia.corigliano@polimi.it>
+Vinicius Gadelha:
+Tommaso Carnovali: <tommaso.carnovali@mail.polimi.it>
+Nour Mohamed:
