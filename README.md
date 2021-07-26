@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/gisele/badge/?version=main)](https://gisele.readthedocs.io/en/main/?badge=main)
+[![Documentation Status](https://readthedocs.org/projects/gisele-v01/badge/?version=main)](https://gisele-v01.readthedocs.io/en/main/?badge=main)
 ![Screenshot](logo.PNG)
 
 # About
