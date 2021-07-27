@@ -20,6 +20,7 @@ The steps are:
 * GIS data collection and processing
 * Population clustering
 * Cluster analysis:
+
     * Microgrid sizing
     * Internal grid routing
 * Connections design

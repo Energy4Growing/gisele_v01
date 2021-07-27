@@ -1,5 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/gisele-v01/badge/?version=main)](https://gisele-v01.readthedocs.io/en/main/?badge=main)
-![Screenshot](logo.PNG)
+![Screenshot](docs/user/images/logo.PNG)
 
 # About
 
@@ -25,7 +25,7 @@ Gisele is provided by a user interface which can be accessed by clicking on the 
 For more information see the documentation in Gisele/docs
 
 # Documentation
-Documentation is available at: https://gisele.readthedocs.io/en/main/
+Documentation is available at: https://gisele-v01.readthedocs.io/en/main/
 
 # Contributing
 Anybody is welcome to contribute to the project! The main steps to follow are:
