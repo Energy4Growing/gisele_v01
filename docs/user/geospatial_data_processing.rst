@@ -8,12 +8,21 @@ The goal of this step is to gather geospatial data related to the area of intere
 where to each point is associated the population and a weight, dependent on type of terrain.
 
 **Files to be loaded**
+When the option 'download GIS data' is not selected, it is necessary to load a csv file with the coordinates
+of the points and
+There is also a procedure, already coded in python, that automatically builds the csv files starting from GIS data.
+
+.. seealso::
+
+   :ref:`Input data preparation  <input_preparation>`
+
 
 **Options**
 
 * Download GIS data: in case this option is active, data are automatically downloaded from online databases.
-  *Insert coordinates (degrees) of a square surrounding the area of interest
-  *Import population: in case this option is active, it is possible to load a csv file with the point indicating the population. The rest of the layers will be loaded automatically
+
+  * Insert coordinates (degrees) of a square surrounding the area of interest
+  * Import population: in case this option is active, it is possible to load a csv file with the point indicating the population. The rest of the layers will be loaded automatically
 
 .. note::
     To use this option it is neccessary to have the login into Earth Engine website, as explained in the installation page
