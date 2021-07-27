@@ -15,7 +15,7 @@ from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 from dash.exceptions import PreventUpdate
 from shapely.geometry import Point
-from functions import load, sizing
+from gisele.functions import load, sizing
 from gisele import initialization, clustering, processing, collecting, \
     optimization, results, grid, branches
 import pyutilib.subprocess.GlobalData

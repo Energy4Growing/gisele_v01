@@ -3,13 +3,9 @@ import os
 import shutil
 import osmnx as ox
 import geopandas as gpd
-import requests
-import pandas as pd
-import functions
-from shapely.geometry import Point, LineString
-import numpy as np
+from gisele import functions
+from shapely.geometry import Point
 import shapely
-import rasterio
 from osgeo import gdal
 import zipfile
 

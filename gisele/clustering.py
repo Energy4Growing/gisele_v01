@@ -14,8 +14,7 @@ import numpy as np
 import plotly.express as px
 from sklearn.cluster import DBSCAN
 import plotly.graph_objs as go
-from plotly.offline import plot
-from functions import l, s
+from gisele.functions import l, s
 
 
 def sensitivity(resolution, pop_points, geo_df, eps, pts, spans):

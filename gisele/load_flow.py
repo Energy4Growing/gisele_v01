@@ -1,12 +1,8 @@
 import pandapower as pp
 import geopandas as gpd
 import pandas as pd
-import os
 from pandapower.plotting.plotly.mapbox_plot import set_mapbox_token
-from pandapower.plotting import simple_plot,simple_plotly
-from functions import nearest
-from pyproj import Transformer
-import pandas.testing as pdt
+from pandapower.plotting import simple_plotly
 from shapely.geometry import Point
 import shapely
 import os

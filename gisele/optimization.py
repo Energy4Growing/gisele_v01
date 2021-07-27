@@ -4,7 +4,7 @@ import pandas as pd
 import geopandas as gpd
 import numpy as np
 import json
-from functions import line_to_points, distance_2d, l, nearest
+from gisele.functions import line_to_points, distance_2d, nearest
 from gisele import dijkstra, npc_optimization
 
 

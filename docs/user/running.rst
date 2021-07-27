@@ -6,14 +6,15 @@ Running Gisele
 Graphical User Interface
 ------------------------
 To start Gisele Graphical User Interface, run the file 'Gisele.py'.
-By clicking on the link that appears, a window in the browser opens at the address:
+To visualize the GUI, type in the browser the following local address: http://127.0.0.1:8050/
 
-The procedure is divided into different steps, corresponding to the tabs.
+The procedure is divided into different steps, each one with a dedicated tab in the GUI.
 
 .. toctree::
-   :caption: Contents:
+   :caption: Gisele's steps:
+   :numbered:
 
-   introduction
+   geospatial_data_processing
    clustering
    grid_routing
    microgrid_sizing

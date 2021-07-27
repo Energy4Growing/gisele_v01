@@ -1,4 +1,4 @@
-from functions import*
+from gisele.functions import*
 import networkx as nx
 import math
 from scipy import sparse

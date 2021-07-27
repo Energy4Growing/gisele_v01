@@ -12,9 +12,9 @@ import math
 import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Point
-from functions import l, s
+from gisele.functions import l, s
 import osmnx as ox
-from gisele import collecting, processing
+
 
 def roads_import(geo_df,crs):
     '''

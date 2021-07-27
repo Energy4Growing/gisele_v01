@@ -252,10 +252,11 @@ def collateral_sizing(geo_df_clustered, col, pop_load):
         points = np.array(list(i))
         pop_col = 0
         for j in points.astype(int):
-            col.loc[col['ID1'] == j, 'id'] = count
-            col.loc[col['ID2'] == j, 'id'] = count
-            pop_col = pop_col + geo_df_clustered[geo_df_clustered['ID'] == j].\
-                Population.values[0]
+            if j in geo_df_clustered['ID']: #road points do not belong to the geodataframe but they do not have population either
+                col.loc[col['ID1'] == j, 'id'] = count
+                col.loc[col['ID2'] == j, 'id'] = count
+                pop_col = pop_col + geo_df_clustered[geo_df_clustered['ID'] == j].\
+                    Population.values[0]
         col.loc[col['id'] == count, 'Power'] = int(pop_col) * pop_load
         count += 1
 
