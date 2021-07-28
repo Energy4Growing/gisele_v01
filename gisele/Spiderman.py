@@ -58,7 +58,7 @@ def spider(geo_df, gdf_cluster_pop, line_bc, resolution, gdf_roads,
                 dijkstra.dijkstra_connection_roads(geo_df, point_1, point_2,
                                                    c_grid_points, line_bc,
                                                    resolution, gdf_roads,
-                                                   roads_segments)
+                                                   roads_segments,branch_points)
 
             # segment, segment_cost, segment_length, seg_pts = \
             #     dijkstra.dijkstra_connection(geo_df, point_1, point_2,

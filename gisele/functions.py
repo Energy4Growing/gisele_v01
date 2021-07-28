@@ -267,9 +267,9 @@ def load(clusters_list, grid_lifetime, input_profile):
     l()
     print("5. Microgrid Sizing")
     l()
-    with open('michele/Inputs/data.json') as f:
+    with open('gisele/michele/Inputs/data.json') as f:
         input_michele = json.load(f)
-    os.chdir(r'../Input//')
+    os.chdir(r'Input//')
     print("Creating load profile for each cluster..")
     daily_profile = pd.DataFrame(index=range(1, 25),
                                  columns=clusters_list.Cluster)
@@ -300,7 +300,7 @@ def load(clusters_list, grid_lifetime, input_profile):
     for cluster in clusters_list.Cluster:
         total_energy.loc[cluster, 'Energy'] = \
             grid_energy.loc[:, cluster].sum().round(2)
-    os.chdir('../..')
+    os.chdir('..')
     print("Load profile created")
     total_energy.to_csv(r'Output/Microgrids/Grid_energy.csv')
     return load_profile, years, total_energy
@@ -348,7 +348,7 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years):
                       dtype=float)
 
     # save useful values from michele input data
-    with open('michele/Inputs/data.json') as f:
+    with open('gisele/michele/Inputs/data.json') as f:
         input_michele = json.load(f)
     proj_lifetime = input_michele['num_years']
     num_typ_days = input_michele['num_days']
@@ -362,7 +362,7 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years):
                                == cluster_n].geometry.y.values[0]
         lon = geo_df_clustered[geo_df_clustered['Cluster']
                                == cluster_n].geometry.x.values[0]
-        all_angles = pd.read_csv('../Input/TiltAngles.csv')
+        all_angles = pd.read_csv('Input/TiltAngles.csv')
         tilt_angle = abs(all_angles.loc[abs(all_angles['lat'] - lat).idxmin(),
                                         'opt_tilt'])
         pv_prod = import_pv_data(lat, lon, tilt_angle)

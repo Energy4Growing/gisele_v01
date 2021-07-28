@@ -72,8 +72,9 @@ def main_branch(gdf_lr, geo_df_clustered, clusters_list, resolution,
         print("Creating main branch for Cluster n." + str(i) + " of "
               + str(len(clusters_list.Cluster)))
         l()
-        lr = int(
-            (((math.sqrt(clusters_list.Size.min())) / 3) + 1) * resolution)
+        # lr = int(
+        #     (((math.sqrt(clusters_list.Size.min())) / 3) + 1) * resolution)
+        lr=resolution*3 #how much power more can the main branch supply
         if points_to_electrify > 1:
             #  cluster gdf is given instead of total gdf to force internal mb
 
@@ -240,6 +241,7 @@ def collateral(geo_df_clustered, geo_df, clusters_list, substations,
 def collateral_sizing(geo_df_clustered, col, pop_load):
 
     col_sized = pd.DataFrame()
+    #in this way, it removes the collateral point belonging to the main branches
     col.drop(col[col['Cost'] < 100].index, inplace=True)
     col.reset_index(drop=True, inplace=True)
     count = 1

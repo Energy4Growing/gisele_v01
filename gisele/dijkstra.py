@@ -5,7 +5,7 @@ from scipy import sparse
 
 
 def dijkstra_connection(geo_df, connecting_point, assigned_substation,
-                        c_grid_points, line_bc, resolution):
+                        c_grid_points, line_bc, resolution,branch_points=None):
 
     connection = gpd.GeoDataFrame()
     connection_cost = 0
@@ -34,6 +34,11 @@ def dijkstra_connection(geo_df, connecting_point, assigned_substation,
 
         #  reduces the weights of edges already present in the cluster grid
         for i in c_grid_points:
+            if i[0] in edges_matrix.index.values and \
+                    i[1] in edges_matrix.index.values:
+                edges_matrix.loc[i[0], i[1]] = 0.001
+                edges_matrix.loc[i[1], i[0]] = 0.001
+        for i in branch_points:
             if i[0] in edges_matrix.index.values and \
                     i[1] in edges_matrix.index.values:
                 edges_matrix.loc[i[0], i[1]] = 0.001
@@ -74,7 +79,7 @@ def dijkstra_connection(geo_df, connecting_point, assigned_substation,
 
 def dijkstra_connection_roads(geo_df, connecting_point, assigned_substation,
                               c_grid_points, line_bc, resolution, gdf_roads,
-                              roads_segments):
+                              roads_segments,branch_points=None):
 
     connection = gpd.GeoDataFrame()
     connection_cost = 0
@@ -108,6 +113,13 @@ def dijkstra_connection_roads(geo_df, connecting_point, assigned_substation,
 
     dist_2d_matrix = distance_2d(df_box, df_box, 'X', 'Y')
     dist_3d_matrix = distance_3d(df_box, df_box, 'X', 'Y', 'Elevation')
+    if branch_points!=None:
+        for i in branch_points:
+            for j, row in df_box_segments.iterrows():
+                if i[0] == row.ID1 and i[1] == row.ID2:
+                    df_box_segments.loc[j,'length'] = 0.001
+                elif i[0] == row.ID2 and i[1] == row.ID1:
+                    df_box_segments.loc[j,'length'] = 0.001
 
     if np.any(dist_2d_matrix):
 
@@ -123,6 +135,14 @@ def dijkstra_connection_roads(geo_df, connecting_point, assigned_substation,
                 costs_matrix.loc[i[1], i[0]] = 0.001
                 edges_matrix.loc[i[0], i[1]] = dist_3d_matrix.loc[i[0], i[1]]
                 edges_matrix.loc[i[1], i[0]] = dist_3d_matrix.loc[i[0], i[1]]
+        if branch_points != None:
+            for i in branch_points:
+                if i[0] in edges_matrix.index.values and \
+                        i[1] in edges_matrix.index.values:
+                    edges_matrix.loc[i[0], i[1]] = 0.001
+                    edges_matrix.loc[i[1], i[0]] = 0.001
+                    costs_matrix.loc[i[0], i[1]] = 0.001
+                    costs_matrix.loc[i[1], i[0]] = 0.001
 
         length_limit = resolution * 1.5
         edges_matrix[dist_2d_matrix > math.ceil(length_limit)] = 0

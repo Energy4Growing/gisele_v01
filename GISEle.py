@@ -324,6 +324,10 @@ app.layout = html.Div([
                              'value': 'GLC'},
                             {'label': 'Copernicus CGLS-LC100',
                              'value': 'CGLS'},
+                            {'label': 'ESACCI',
+                             'value': 'ESACCI'},
+                            {'label': 'Other',
+                             'value': 'Other'},
                         ],
                         value='GLC'
                     )
@@ -1526,8 +1530,8 @@ def routing(grid_routing):
                                      full_ele)
 
         elif branch == 'yes':
-            shutil.rmtree('Output/Branches', ignore_errors=True)
-            os.makedirs('Output/Branches')
+            # shutil.rmtree('Output/Branches', ignore_errors=True)
+            # os.makedirs('Output/Branches')
             gdf_lr = branches.reduce_resolution(input_csv, geo_df, resolution,
                                                 geo_df_clustered,
                                                 clusters_list)
@@ -1545,7 +1549,7 @@ def routing(grid_routing):
             #                                            roads_segments)
 
             fig_grid = results.graph(geo_df_clustered, clusters_list, branch,
-                                     grid_resume, substations, pop_thresh,
+                                     grid_resume, pop_thresh,
                                      full_ele)
 
         return fig_grid
