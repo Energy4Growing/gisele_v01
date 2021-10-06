@@ -4,6 +4,6 @@ Aleksandar Dimovski: Politecnico di Milano <aleksandar.dimovski@polimi.it>
 Darlain Edeme: Politecnico di Milano < darlain.edeme@polimi.it>
 Marina Petrelli: Politecnico di Milano <marina.petrelli@polimi.it>
 Silvia Corigliano: Politecnico di Milano <silvia.corigliano@polimi.it>
-Vinicius Gadelha:
-Tommaso Carnovali: <tommaso.carnovali@mail.polimi.it>
-Nour Mohamed:
+Vinicius Gadelha: Politecnico di Milano <vinicius.gadelha@mail.polimi.it>
+Tommaso Carnovali: Politecnico di Milano <tommaso.carnovali@mail.polimi.it>
+Nour Mohamed: Politecnico di Milano <nourmohamed.ahmed@mail.polimi.it>

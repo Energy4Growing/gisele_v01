@@ -1,18 +1,18 @@
 Parameter,Value
 import_data,no
-input_csv,Namajavira-Mozambique-32737-1000
-input_sub,Substations-Namajavira
+input_csv,Namanjavira-Mozambique-32737-200
+input_sub,Substations-Namanjavira
 crs,32737
-resolution,1000
+resolution,200
 unit,1
 pop_load,0.04
-pop_thresh,50
-line_bc,10000
+pop_thresh,5
+line_bc,20000
 sub_cost_HV,1000000
 sub_cost_MV,100000
 branch,no
-pop_thresh_lr,200
-line_bc_col,3333
+pop_thresh_lr,50
+line_bc_col,15000
 full_ele,no
 wt,Nordex N27 150
 coe,0.1432
@@ -22,8 +22,8 @@ grid_lifetime,40
 eps,2000-3100
 pts,50-150
 spans,5
-eps_final,1500
-pts_final,500
+eps_final,1140
+pts_final,480
 c1_merge,0
 c2_merge,0
 landcover_option,GLC
