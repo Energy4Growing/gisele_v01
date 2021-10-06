@@ -3,8 +3,7 @@ from gisele import Steinerman, Spiderman, dijkstra
 
 
 def routing(geo_df_clustered, geo_df, clusters_list, resolution,
-            pop_thresh, input_sub, line_bc, sub_cost_hv, sub_cost_mv,
-            full_ele):
+            pop_thresh, line_bc,full_ele):
     s()
     print("3. Grid Creation")
     s()

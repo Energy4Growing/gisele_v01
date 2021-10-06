@@ -16,7 +16,7 @@ all_clusters_together=False # this variable decides if we will create 1 grid (tr
 """ STEP 1 - LOAD the nodes, find which clusters are grid-connected and filter the nodes from those clusters only"""
 os.chdir('..')
 substations=pd.read_csv('Input/Substations-Cavalcante.csv')
-config = pd.read_csv('Input/Configuration.csv') # this part will be changed when this becomes a function,
+config = pd.read_csv('Input/Configuration-1000.csv') # this part will be changed when this becomes a function,
 # the parameter will be automatically taken as an input
 #pop_load = float(config.iloc[6, 1])
 pop_load = 0.4

@@ -41,9 +41,9 @@ def routing(geo_df_clustered, geo_df, clusters_list, resolution,
                               gdf_roads, roads_segments, geo_df)
 
     grid_resume, all_collateral = collateral(geo_df_clustered, geo_df,
-                                             clusters_list, substations,
-                                             resolution, pop_thresh, line_bc,
-                                             line_bc_col, limit_hv, limit_mv,
+                                             clusters_list,
+                                             resolution, pop_thresh,
+                                             line_bc_col,
                                              grid_resume, pop_load, gdf_roads,
                                              roads_segments)
 
@@ -109,9 +109,8 @@ def main_branch(gdf_lr, geo_df_clustered, clusters_list, resolution,
     return grid_resume
 
 
-def collateral(geo_df_clustered, geo_df, clusters_list, substations,
-               resolution, pop_thresh, line_bc, line_bc_col, sub_cost_hv,
-               sub_cost_mv, grid_resume, pop_load, gdf_roads, roads_segments):
+def collateral(geo_df_clustered, geo_df, clusters_list,
+               resolution, pop_thresh, line_bc_col, grid_resume, pop_load, gdf_roads, roads_segments):
 
     all_connections = pd.DataFrame()
     all_collateral = pd.DataFrame()

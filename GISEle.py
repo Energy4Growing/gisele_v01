@@ -1301,7 +1301,7 @@ def configuration(import_data, crs, resolution,
             ctx.triggered[0]['prop_id'].split('.')[0])
         print(config)
         # todo -> update config csv file, need to check parameters are saved properly
-        config.to_csv('Input/Configuration.csv',index=False)
+        config.to_csv('Input/Configuration-1000.csv',index=False)
     else:
         raise PreventUpdate
     return html.Div(msg)
@@ -1516,8 +1516,8 @@ def routing(grid_routing):
             os.makedirs('Output/Grids')
             grid_resume, gdf_roads, roads_segments = \
                 grid.routing(geo_df_clustered, geo_df, clusters_list,
-                             resolution, pop_thresh, input_sub, line_bc,
-                             sub_cost_hv, sub_cost_mv, full_ele)
+                             resolution, pop_thresh, line_bc,
+                              full_ele)
 
             # grid_resume_opt = optimization.connections(geo_df, grid_resume,
             #                                            resolution, line_bc,
@@ -1530,8 +1530,8 @@ def routing(grid_routing):
                                      full_ele)
 
         elif branch == 'yes':
-            # shutil.rmtree('Output/Branches', ignore_errors=True)
-            # os.makedirs('Output/Branches')
+            shutil.rmtree('Output/Branches', ignore_errors=True)
+            os.makedirs('Output/Branches')
             gdf_lr = branches.reduce_resolution(input_csv, geo_df, resolution,
                                                 geo_df_clustered,
                                                 clusters_list)
