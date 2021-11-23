@@ -1301,7 +1301,7 @@ def configuration(import_data, crs, resolution,
             ctx.triggered[0]['prop_id'].split('.')[0])
         print(config)
         # todo -> update config csv file, need to check parameters are saved properly
-        config.to_csv('Input/Configuration-1000.csv',index=False)
+        config.to_csv('Input/Configuration.csv',index=False)
     else:
         raise PreventUpdate
     return html.Div(msg)
