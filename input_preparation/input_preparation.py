@@ -9,7 +9,7 @@ import rasterio
 from rasterio.enums import Resampling
 from shapely.geometry import Point, MultiPoint, MultiPolygon
 from shapely.ops import nearest_points
-from gisele import initialization
+
 
 # Define the function resample
 def resample(raster, resolution,options):
@@ -111,12 +111,14 @@ def rasters_to_points(study_area,crs,resolution_points,dir,protected_areas,stree
     # Population
     population_Raster=rasterio.open(dir+'/Input/Population_' + str(crs) + '.tif')
     resolution_population = population_Raster.transform[0]
-    data_population, profile_population = resample(population_Raster, resolution_points,'average')
-    with rasterio.open(dir+'/Input/Population_resampled.tif',
-                     'w', **profile_population) as dst:
-        dst.write(data_population)
-    Population = rasterio.open(dir+'/Input/Population_resampled.tif')
-    ratio=Population.transform[0]/resolution_population
+    population_array=population_Raster.read()
+    population_array[np.isnan(population_array)] = 0
+    # data_population, profile_population = resample(population_Raster, resolution_points,'average')
+    # with rasterio.open(dir+'/Input/Population_resampled.tif',
+    #                  'w', **profile_population) as dst:
+    #     dst.write(data_population)
+    # Population = rasterio.open(dir+'/Input/Population_resampled.tif')
+    # ratio=Population.transform[0]/resolution_population
 
     # Elevation
     elevation_Raster = rasterio.open(dir+'/Input/Elevation_' + str(crs) + '.tif')
@@ -159,8 +161,8 @@ def rasters_to_points(study_area,crs,resolution_points,dir,protected_areas,stree
     print('Elevation finished')
     pointData['Slope'] = [x[0] for x in Slope.sample(coords)]
     print('Slope finished')
-    pointData['Population'] = [x[0]*pow(ratio,2) for x in Population.sample(coords)]
-    pointData['Population']=pointData['Population'].round(decimals=0)
+    # pointData['Population'] = [x[0]*pow(ratio,2) for x in Population.sample(coords)]
+    # pointData['Population']=pointData['Population'].round(decimals=0)
     print('Population finished')
     pointData['Land_cover'] = [x[0] for x in LandCover.sample(coords)]
     print('Land cover finished')
@@ -190,6 +192,19 @@ def rasters_to_points(study_area,crs,resolution_points,dir,protected_areas,stree
         #landcover=LandCover.read(1)[row,col]
 
         #protected=protected_areas['geometry'].contains(Point(x,y)).any()
+        if resolution_population <= resolution_points:
+            row_min, column_max = population_Raster.\
+                index(x + resolution_points/2, y + resolution_points/2)
+            row_max, column_min = population_Raster.\
+                index(x - resolution_points / 2, y - resolution_points / 2)
+            value = population_array[0, row_min:row_max,
+                               column_min:column_max].sum().sum()
+            pointData.loc[index, 'Population'] = value
+        else:
+            x, y = population_Raster.index(x, y)
+            # better assign to the center
+            pointData.loc[index, 'Population'] = \
+                population_array[0, x, y]/resolution_population * resolution_points
 
         nearest_geoms = nearest_points(Point(x,y), streets)
         road_distance = nearest_geoms[0].distance(nearest_geoms[1])
