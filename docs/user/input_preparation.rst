@@ -12,4 +12,4 @@ To use it, please follow the following steps:
 * Create a 'database' folder, with the same subfolders and files as the folder 'mocuba': the files are the source files that will be cropped for the desired case_study area;
 * Change the parameters in the file 'input-config.csv': crs, the epsg code of the projected coordinate reference system for the area; resolution, the desired resolution for the grid of points in Gisele; case_study, the name of the case_study folder created; database, the name of the database folder created.
 * Run *input_preparation.py*;
-*Retrieve the csv file with the regular grid of points from the 'case_study/Output' folder.
+* Retrieve the csv file with the regular grid of points from the 'case_study/Output' folder.
