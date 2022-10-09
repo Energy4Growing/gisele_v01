@@ -1,66 +1,182 @@
-
-{	"num_days": 12,
-	"num_years": 10,
-	"pv_types": 1,
-	"wt_types": 1,
-	"bess_types": 1,
-	"dg_types": 1,
-	"pv_nominal_capacity": {"1":1},
-	"pv_investment_cost": {"1":1400},
-	"pv_OM_cost": {"1":10},
-	"pv_max_units": {"1":100000},
-	"pv_life": {"1":20},
-	"pv_unav": {"1":12},
-	"wt_nominal_capacity": {"1":150},
-	"wt_investment_cost": {"1":270000},
-	"wt_OM_cost": {"1":3},
-	"wt_max_units": {"1":200},
-	"wt_life": {"1":20},
-	"wt_unav": {"1":8},
-	"bess_nominal_capacity": {"1":1},
-	"bess_investment_cost": {"1":400},
-	"bess_OM_cost": {"1":10},
-	"bess_max_units": {"1":200000},
-	"bess_life": {"1":15},
-	"bess_cycle_life": {"1":3000},
-	"bess_depth_of_discharge": {"1":0.9},
-	"bess_P_ratio_max": {"1":1},
-	"bess_ch_efficiency_nom": {"1":0.989949},
-	"bess_dis_efficiency_nom": {"1":0.989949},
-	"bess_initial_SOC": {"1":1},
-	"dg_nominal_capacity": {"1":16},
-	"dg_investment_cost": {"1":11000},
-	"dg_OM_cost": {"1":0.208},
-	"dg_max_units": {"1":400},
-	"dg_life": {"1":15000},
-	"dg_unav": {"1":8},
-	"dg_P_min": {"1":0.3},
-	"dg_cost_coeff_A": {"1":0.4672},
-	"dg_cost_coeff_B": {"1":0.3000},
-	"dg_SU_cost": {"1":0.4},
-	"dg_SD_cost": {"1":0.2},
-	"dg_UT": {"1":3},
-	"dg_DT": {"1":1},
-	"dg_RU": {"1":8},
-	"dg_RD": {"1":8},
-	"dg_spec_emis": {"1":2640},
-	"inflation_rate": 0.02,
-	"nominal_interest_rate": 0.08,
-	"derating_factor": 0.9,
-	"lost_load_max": 0.05,
-	"lost_load_value": 1,
-	"ren_fraction": 0.8,
-	"fuel_cost": 0.75,
-	"inverter_cost": 300,
-	"inverter_life": 20,
-	"inverter_unav": 8,
-	"load_forecast_error": 0.1,
-	"pv_forecast_error": 0.1,
-	"wt_forecast_error": 0.25,
-	"demand_growth": 0.02,
-	"M": 10000,
-	"epsilon": 0.0001
-
-
-
+{
+    "num_days": 12,
+    "num_years": 10,
+    "pv_types": 1,
+    "wt_types": 1,
+    "bess_types": 1,
+    "dg_types": 1,
+    "pv_nominal_capacity": {
+        "1": 1
+    },
+    "pv_investment_cost": {
+        "1": 1400
+    },
+    "pv_OM_cost": {
+        "1": 10
+    },
+    "pv_max_units": {
+        "1": 100000
+    },
+    "pv_life": {
+        "1": 20
+    },
+    "pv_unav": {
+        "1": 12
+    },
+    "wt_nominal_capacity": {
+        "1": 150
+    },
+    "wt_investment_cost": {
+        "1": 270000
+    },
+    "wt_OM_cost": {
+        "1": 3
+    },
+    "wt_max_units": {
+        "1": 200
+    },
+    "wt_life": {
+        "1": 20
+    },
+    "wt_unav": {
+        "1": 8
+    },
+    "bess_nominal_capacity": {
+        "1": 1
+    },
+    "bess_investment_cost": {
+        "1": 400
+    },
+    "bess_OM_cost": {
+        "1": 10
+    },
+    "bess_max_units": {
+        "1": 200000
+    },
+    "bess_life": {
+        "1": 15
+    },
+    "bess_cycle_life": {
+        "1": 3000
+    },
+    "bess_depth_of_discharge": {
+        "1": 0.9
+    },
+    "bess_P_ratio_max": {
+        "1": 1
+    },
+    "bess_ch_efficiency_nom": {
+        "1": 0.989949
+    },
+    "bess_dis_efficiency_nom": {
+        "1": 0.989949
+    },
+    "bess_initial_SOC": {
+        "1": 1
+    },
+    "dg_nominal_capacity": {
+        "1": 16
+    },
+    "dg_investment_cost": {
+        "1": 11000
+    },
+    "dg_OM_cost": {
+        "1": 0.208
+    },
+    "dg_max_units": {
+        "1": 400
+    },
+    "dg_life": {
+        "1": 15000
+    },
+    "dg_unav": {
+        "1": 8
+    },
+    "dg_P_min": {
+        "1": 0.3
+    },
+    "dg_cost_coeff_A": {
+        "1": 0.4672
+    },
+    "dg_cost_coeff_B": {
+        "1": 0.3
+    },
+    "dg_SU_cost": {
+        "1": 0.4
+    },
+    "dg_SD_cost": {
+        "1": 0.2
+    },
+    "dg_UT": {
+        "1": 3
+    },
+    "dg_DT": {
+        "1": 1
+    },
+    "dg_RU": {
+        "1": 8
+    },
+    "dg_RD": {
+        "1": 8
+    },
+    "dg_spec_emis": {
+        "1": 2640
+    },
+    "inflation_rate": 0.02,
+    "nominal_interest_rate": 0.08,
+    "derating_factor": 0.9,
+    "lost_load_max": 0.05,
+    "lost_load_value": 1,
+    "ren_fraction": 0.8,
+    "fuel_cost": 0.75,
+    "inverter_cost": 300,
+    "inverter_life": 20,
+    "inverter_unav": 8,
+    "load_forecast_error": 0.1,
+    "pv_forecast_error": 0.1,
+    "wt_forecast_error": 0.25,
+    "demand_growth": 0.02,
+    "M": 10000,
+    "epsilon": 0.0001,
+    "max_ht_dist": 5000,
+    "ht_types": 2,
+    "ht_nominal_capacity": {
+        "1": 10.0,
+        "2": 10.0
+    },
+    "ht_investment_cost": {
+        "1": 80000.0,
+        "2": 80000.0
+    },
+    "ht_connection_cost": {
+        "1": 1164218.9804924622,
+        "2": 1151160.3980507427
+    },
+    "ht_OM_cost": {
+        "1": 0.36,
+        "2": 0.36
+    },
+    "ht_max_units": {
+        "1": 1000.0,
+        "2": 1000.0
+    },
+    "ht_life": {
+        "1": 40.0,
+        "2": 40.0
+    },
+    "ht_unav": {
+        "1": 8.0,
+        "2": 8.0
+    },
+    "ht_P_min": {
+        "1": 0.5,
+        "2": 0.5
+    },
+    "ht_efficiency": {
+        "1": 0.8,
+        "2": 0.8
+    },
+    "max_ht_power": 1000,
+    "min_ht_power": 10,
+    "max_flow_rate": 20
 }

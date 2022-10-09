@@ -35,8 +35,8 @@ def Initialize_Discount_Rate(model, h):
     return 1 / (1+model.ir)**(h//(model.num_days * 24))
 
 
-def importing(load_profile, pv_avg, wt_avg):
-    global input_load, wt_prod, pv_prod
+def importing(load_profile, pv_avg, wt_avg,ht_avg):
+    global input_load, wt_prod, pv_prod, ht_prod
 
     input_load = pd.DataFrame(data=list(load_profile),
                               index=np.arange(1, load_profile.size+1),
@@ -59,7 +59,13 @@ def importing(load_profile, pv_avg, wt_avg):
                            index=np.arange(1, wt_avg.size + 1),
                            columns=['1'])
 
-    return input_load, wt_prod, pv_prod
+    ht_prod = pd.DataFrame(data=ht_avg.values,
+
+                           index=np.arange(1, len(ht_avg[0]) + 1),
+
+                           columns=[str(x + 1) for x in ht_avg.columns])
+
+    return input_load, wt_prod, pv_prod, ht_prod
 
 def Initialize_load(model, h):
 
@@ -72,6 +78,9 @@ def Initialize_pv_prod(model,h, p):
 
 def Initialize_wt_prod(model, h, p):
     return wt_prod.loc[h, str(p)]
+
+def Initialize_ht_prod(model,h,p):
+    return ht_prod.loc[h,str(p)]
 
 
 

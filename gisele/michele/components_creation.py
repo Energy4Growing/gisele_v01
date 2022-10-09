@@ -4,7 +4,7 @@ from pyomo.environ import Param, RangeSet, Set, Var, Objective, Constraint, mini
 from gisele.michele.constraints_definition import *
 from gisele.michele.components_initialization import *
 
-def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
+def Model_Creation(model, input_load, wt_prod, pv_prod,ht_prod,input_michele):
     '''
     This function creates the instance for the resolution of the optimization in Pyomo.
 
@@ -18,6 +18,7 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     wt_types = list(range(1,input_michele['wt_types']+1))
     bess_types = list(range(1,input_michele['bess_types']+1))
     dg_types = list(range(1,input_michele['dg_types']+1))
+    ht_types = list(range(1, input_michele['ht_types'] + 1))
 
     # Parameters related to set definition
     model.num_days = Param() #number of representative days of 1 year
@@ -28,6 +29,7 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     model.wt_types = Param()
     model.bess_types = Param()
     model.dg_types = Param()
+    model.ht_types=Param()
 
     #SETS
 
@@ -42,7 +44,7 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     model.wt = Set(initialize=[str(n) for n in wt_types])
     model.bess = Set(initialize=[str(n) for n in bess_types])
     model.dg = Set(initialize=[str(n) for n in dg_types])
-
+    model.ht=Set(initialize=[str(n) for n in ht_types])
 
     #PARAMETERS
 
@@ -59,6 +61,17 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     model.wt_OM_cost = Param(model.wt)  # Cost of O&M WT in €/unit/y
     model.wt_max_units = Param(model.wt)  # Maximum number of installed units [-]
     model.wt_life = Param(model.wt)  # Lifetime of WT [y]
+
+    # Parameters of the Hydro Turbine
+
+    model.ht_nominal_capacity = Param(model.ht)  # Nominal capacity of the HT in kW/unit
+    model.ht_investment_cost = Param(model.ht)  # Cost of HT in €/unit
+    model.ht_connection_cost = Param(model.ht)  # Cost of ht interconnection to the MV grid €
+    model.ht_OM_cost = Param(model.ht)  # Cost of O&M HT in €/unit/y
+    model.ht_max_units = Param(model.ht)  # Maximum number of installed units [-]
+    model.ht_life = Param(model.ht)  # Lifetime of HT [y]
+    model.ht_P_min = Param(model.ht)  # Minimum power of HT (related to min flow rate) [0-1]
+    model.ht_efficiency = Param(model.ht)  # Constant efficiency of HT [0-1]
 
     # Parameters of the Storage System
     model.bess_nominal_capacity = Param(model.bess)  # Nominal capacity of the BESS in kWh/unit
@@ -113,7 +126,7 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     model.input_load = Param(model.hours, initialize=Initialize_load)  # hourly load profile [kWh]
     model.input_pv_prod = Param(model.hours, model.pv, initialize=Initialize_pv_prod)  # hourly PV production [kWh]
     model.input_wt_prod = Param(model.hours, model.wt, initialize=Initialize_wt_prod)  # hourly WT production [kWh]
-
+    model.input_hydro_res = Param(model.hours, model.ht, initialize=Initialize_ht_prod)  # hourly HT production [kWh]
 
     #VARIABLES
 
@@ -127,6 +140,11 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     model.pv_units = Var(model.pv, within=NonNegativeReals)  # Number of units of solar panels
     model.wt_units = Var(model.wt,within=NonNegativeIntegers)  # Number of units of wind turbines
     model.total_power_res = Var(model.hours, within=NonNegativeReals)  # Power generated from the PV and WT [kW]
+
+    # Variables associated to the hydro turbine
+    model.ht_units = Var(model.ht, within=NonNegativeIntegers)  # Number of installed units of hydro turbine
+    model.ht_power = Var(model.hours, model.ht, within=NonNegativeReals)  # Power provided by HT [kWh]
+    model.ht_units_on = Var(model.hours, model.ht, within=NonNegativeIntegers)  # number of active HT in h
 
     # Variables associated to the battery bank
     model.bess_units = Var(model.bess, within=NonNegativeReals)  # Number of units of batteries
@@ -189,7 +207,11 @@ def Model_Creation(model, input_load, wt_prod, pv_prod,input_michele):
     model.BessChargingLevelMax = Constraint(model.hours,model.bess, rule=bess_charging_level_max)
     model.BessChPowerMax = Constraint(model.hours,model.bess, rule=bess_ch_power_max)
     model.BessDisPowerMax = Constraint(model.hours, model.bess, rule=bess_dis_power_max)
-
+    # constraints related to hydro turbine
+    model.HtPowerMax = Constraint(model.hours, model.ht, rule=ht_power_max)
+    model.HtPowerRiver = Constraint(model.hours, model.ht, rule=ht_power_river)
+    model.HtPowerMin = Constraint(model.hours, model.ht, rule=ht_power_min)
+    model.HtOnline = Constraint(model.hours, model.ht, rule=ht_online)
 
 
 

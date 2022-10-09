@@ -19,8 +19,8 @@ coe,0.1432,
 grid_ir,0.01,
 grid_om,0.01,
 grid_lifetime,40,
-eps,2000.0,3100.0
-pts,50.0,150.0
+eps,2000,3100
+pts,50,150
 spans,5,
 eps_final,2000,
 pts_final,500,
@@ -28,3 +28,4 @@ c1_merge,3,
 c2_merge,4,
 landcover_option,GLC,
 p_max_lines,20,
+hydro_option,1,

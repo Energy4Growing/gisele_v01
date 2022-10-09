@@ -264,9 +264,8 @@ def load(clusters_list, grid_lifetime, input_profile):
     :return years: Number of years the microgrid will operate
     :return total_energy: Energy provided by the grid in its lifetime [kWh]
     """
-    l()
     print("5. Microgrid Sizing")
-    l()
+    print(os.getcwd())
     with open('gisele/michele/Inputs/data.json') as f:
         input_michele = json.load(f)
     os.chdir(r'Input//')
@@ -276,7 +275,7 @@ def load(clusters_list, grid_lifetime, input_profile):
     for column in daily_profile:
         daily_profile.loc[:, column] = \
             (input_profile.loc[:, 'Hourly Factor']
-             * clusters_list.loc[column, 'Load [kW]']).values
+             * float(clusters_list.loc[column, 'Load [kW]'])).values
     rep_days = input_michele['num_days']
     grid_energy = daily_profile.append([daily_profile] * 364,
                                        ignore_index=True)
@@ -325,7 +324,7 @@ def shift_timezone(df, shift):
     return df
 
 
-def sizing(load_profile, clusters_list, geo_df_clustered, wt, years):
+def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro_turbines,crs,line_base_cost):
     """
     Imports the solar and wind production from the RenewablesNinja api and then
     Runs the optimization algorithm MicHEle to find the best microgrid
@@ -337,9 +336,12 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years):
     :param years: Number of years the microgrid will operate (project lifetime)
     :return mg: Dataframe containing the information of the Clusters' microgrid
     """
+
+
+
     geo_df_clustered = geo_df_clustered.to_crs(4326)
     mg = pd.DataFrame(index=clusters_list.index,
-                      columns=['PV [kW]', 'Wind [kW]', 'Diesel [kW]',
+                      columns=['PV [kW]', 'Wind [kW]','Hydro [kW]', 'Diesel [kW]',
                                'BESS [kWh]', 'Inverter [kW]',
                                'Investment Cost [k€]', 'OM Cost [k€]',
                                'Replace Cost [k€]', 'Total Cost [k€]',
@@ -352,12 +354,26 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years):
         input_michele = json.load(f)
     proj_lifetime = input_michele['num_years']
     num_typ_days = input_michele['num_days']
-    for cluster_n in clusters_list.Cluster:
 
+    max_dist_ht = input_michele['max_ht_dist']
+
+
+    # exclude rivers that are too big or too small for putting mini hydro
+    if not rivers.empty:
+        rivers_filtered = rivers.loc[
+             (rivers['P [kW]'] < input_michele['max_ht_power']) & (rivers['P [kW]'] > input_michele['min_ht_power'])
+
+             & (rivers['annual_disch'] < input_michele['max_flow_rate']), :]
+
+
+    for cluster_n in clusters_list['Cluster'].astype(int):
         l()
         print('Creating the optimal Microgrid for Cluster ' + str(cluster_n))
         l()
-        load_profile_cluster = load_profile.loc[:, cluster_n]
+        try: # in some cases it is reading them as strings
+            load_profile_cluster = load_profile.loc[:, cluster_n]
+        except:
+            load_profile_cluster = load_profile.loc[:, str(cluster_n)]
         lat = geo_df_clustered[geo_df_clustered['Cluster']
                                == cluster_n].geometry.y.values[0]
         lon = geo_df_clustered[geo_df_clustered['Cluster']
@@ -415,14 +431,115 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years):
                                ignore_index=True)
         wt_avg.reset_index(drop=True, inplace=True)
         wt_avg = shift_timezone(wt_avg, time_shift)
+        if rivers.empty and hydro_turbines.empty:
+            ht_avg = wt_avg #fake number just so that the code can work without too many if/else clauses
+            input_michele['ht_max_units'][str(i + 1)] = 0
+        else:
+            if os.path.exists('Output\Grids\Grid_' + str(cluster_n) + '.shp'):
 
-        inst_pv, inst_wind, inst_dg, inst_bess, inst_inv, init_cost, \
+                grid = gpd.read_file('Output\Grids\Grid_' + str(cluster_n) + '.shp')
+
+                buffer = grid.geometry.buffer(max_dist_ht).unary_union
+            elif os.path.exists('Output\Branches\Branch_' + str(cluster_n) + '.shp') or \
+                os.path.exists('Output\Branches\Collateral_' + str(cluster_n) + '.shp'):
+
+                try:
+                    Branches = gpd.read_file('Output\Branches\Branch_' + str(cluster_n) + '.shp')
+                    try:
+                        Collaterals = gpd.read_file('Output\Branches\Colleteral_' + str(cluster_n) + '.shp')
+                    except:
+                        Collaterals = gpd.GeoDataFrame()
+                except:
+                    Branches = gpd.GeoDataFrame()
+                    Collaterals = gpd.read_file('Output\Branches\Colleteral_' + str(cluster_n) + '.shp')
+
+                grid = Branches.append(Collaterals)
+                buffer = grid.geometry.buffer(max_dist_ht).unary_union
+            else:
+                buffer = geo_df_clustered[geo_df_clustered['Cluster']==cluster_n].buffer(max_dist_ht).unary_union
+                grid = gpd.GeoDataFrame()
+
+            rivers_inters = rivers_filtered[rivers_filtered.intersects(buffer)]
+
+            rivers_inters.sort_values('P [kW]', inplace=True, ascending=False)
+
+            flow_rate = rivers_inters[['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']]
+
+            days_rounded = int(np.floor(12 / num_typ_days))
+
+            num_rivers = len(rivers_inters['P [kW]'])
+
+            rivers_inters.reset_index(inplace=True)
+            if not grid.empty:
+                grid_cluster = line_to_points(grid, geo_df_clustered)
+            else: #this is a questionable fix in the case that the cluster has only one node - there could be errors
+                grid_cluster = geo_df_clustered[geo_df_clustered['Cluster']==cluster_n]
+
+
+            dist = []
+
+            if num_rivers > 0:
+                if num_rivers > 3:
+                    ht_avg = pd.DataFrame(columns=[0, 1, 2], index=range(24 * num_typ_days))
+                    max_riv = 3
+                else:
+                    ht_avg = pd.DataFrame(index=range(24 * num_typ_days))
+                    max_riv = num_rivers
+                input_michele['ht_types'] = max_riv
+                for i in range(max_riv):
+
+                    dist = []
+
+                    flow_rate_river = flow_rate.iloc[i, :]
+
+                    for j in range(num_typ_days):
+                        ht_avg.loc[j * 24:(j + 1) * 24, i] = flow_rate_river[
+                                                             days_rounded * j:days_rounded * (j + 1)].mean()
+
+                    ht_avg[i] = ht_avg[i] * rivers_inters.loc[i, 'head [m]'] * 9.8
+                    p_nom = rivers_inters.loc[i, 'P [kW]']
+                    # select the turbine with highest capacity among those with pnom < nominal river power
+                    dist = [point.distance(rivers_inters.loc[i, 'geometry']) for point in
+                            grid_cluster.to_crs(crs).geometry]
+                    dist = min(dist)
+                    turbines = hydro_turbines[hydro_turbines['nominal_capacity'] < p_nom]
+                    turbine = turbines.iloc[-1, :]
+                    input_michele['ht_nominal_capacity'][str(i + 1)] = turbine['nominal_capacity']
+                    input_michele['ht_investment_cost'][str(i + 1)] = turbine['investment_cost']
+                    input_michele['ht_connection_cost'][str(i + 1)] = dist * line_base_cost/ 1000
+                    input_michele['ht_OM_cost'][str(i + 1)] = turbine['OM_cost']
+                    input_michele['ht_life'][str(i + 1)] = turbine['life']
+                    input_michele['ht_unav'][str(i + 1)] = turbine['unav']
+                    input_michele['ht_P_min'][str(i + 1)] = turbine['P_min']
+                    input_michele['ht_efficiency'][str(i + 1)] = turbine['efficiency']
+                    input_michele['ht_max_units'][str(i + 1)] = turbine['max_units']
+
+            else:
+                ht_avg = pd.DataFrame(index=range(24 * num_typ_days))
+                ht_avg[0] = 0
+                input_michele['ht_max_units'][str(1)] = 0
+
+
+            ht_avg = ht_avg.append([ht_avg] * (proj_lifetime - 1), ignore_index=True)
+
+        if not os.path.exists(r'Output/Microgrids/average_profiles'):
+            os.makedirs(r'Output/Microgrids/average_profiles')
+        with open('gisele\michele\Inputs\data.json',
+                  'w') as fp:
+            json.dump(input_michele, fp, indent=4)
+        ht_avg.to_csv(r'Output/Microgrids/average_profiles/ht_avg_'+str(cluster_n)+'.csv')
+        wt_avg.to_csv(r'Output/Microgrids/average_profiles/wt_avg_' + str(cluster_n) + '.csv')
+        pv_avg.to_csv(r'Output/Microgrids/average_profiles/pv_avg_' + str(cluster_n) + '.csv')
+
+
+        inst_pv, inst_wind, inst_dg,inst_hydro, inst_bess, inst_inv, init_cost, \
         rep_cost, om_cost, salvage_value, gen_energy, load_energy, emissions = \
-            start(load_profile_cluster, pv_avg, wt_avg,input_michele)
+            start(load_profile_cluster, pv_avg, wt_avg,input_michele,ht_avg)
 
         mg.loc[cluster_n, 'PV [kW]'] = inst_pv
         mg.loc[cluster_n, 'Wind [kW]'] = inst_wind
         mg.loc[cluster_n, 'Diesel [kW]'] = inst_dg
+        mg.loc[cluster_n, 'Hydro [kW]'] = inst_hydro
         mg.loc[cluster_n, 'BESS [kWh]'] = inst_bess
         mg.loc[cluster_n, 'Inverter [kW]'] = inst_inv
         mg.loc[cluster_n, 'Investment Cost [k€]'] = init_cost

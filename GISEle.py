@@ -1573,13 +1573,26 @@ def microgrid_size(mg_sizing):
             gpd.read_file(r"Output/Clusters/geo_df_clustered.json")
 
         clusters_list = pd.read_csv(r"Output/Clusters/clusters_list.csv")
+
+
         clusters_list.index = clusters_list.Cluster.values
 
         yearly_profile, years, total_energy = load(clusters_list,
                                                    grid_lifetime,
                                                    input_profile)
-
-        mg = sizing(yearly_profile, clusters_list, geo_df_clustered, wt, years)
+        hydro_option = int(config.loc[config['Parameter'] == 'hydro_option', 'Value'].values[0])
+        crs = int(config.loc[config['Parameter'] == 'crs', 'Value'].values[0])
+        line_base_cost = int(config.loc[config['Parameter'] == 'line_bc', 'Value'].values[0])
+        if hydro_option == 1: #1 means hydro option is active, 0 if it's not.
+            try:
+                rivers = gpd.read_file('Input/rivs_power.json')
+                hydro_turbines = pd.read_csv('Input/hydro_turbines.csv', index_col='turbine')
+            except:
+                print('There is an issue with reading rivs_power.json and/or hydro_turbines.csv - Put them in the Input folder')
+        else:
+            rivers = pd.DataFrame()
+            hydro_turbines=pd.DataFrame()
+        mg = sizing(yearly_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro_turbines,crs,line_base_cost)
         fig_mg=results.graph_mg(mg,geo_df_clustered,clusters_list)
         return fig_mg
     else:

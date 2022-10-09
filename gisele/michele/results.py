@@ -29,6 +29,7 @@ def Load_results(instance):
 
     res_tot = pd.DataFrame.from_dict(instance.total_power_res.get_values(), orient='index')
     dg_tot = pd.DataFrame.from_dict(instance.dg_power.get_values(), orient='index')
+    ht_tot = pd.DataFrame.from_dict(instance.ht_power.get_values(), orient='index')
     bess_disch = pd.DataFrame.from_dict(instance.bess_dis_power.get_values(), orient='index')
     bess_ch = pd.DataFrame.from_dict(instance.bess_ch_power.get_values(), orient='index')
     lost_load = pd.DataFrame.from_dict(instance.lost_load.get_values(), orient='index')
@@ -101,12 +102,14 @@ def Load_results(instance):
     WT_types = instance.wt_types.extract_values()[None]
     BESS_types = instance.bess_types.extract_values()[None]
     Generator_types = instance.dg_types.extract_values()[None]
+    HT_types = instance.ht_types.exctract_values()[None]
 
     inst_pv = 0
     inst_wind = 0
     inst_bess = 0
     inst_dg = 0
     inst_inv_bess = 0
+    inst_hydro = 0
 
     for i in range(1, PV_types + 1):
         Number_PV = int(instance.pv_units.get_values()[str(i)])
@@ -138,6 +141,12 @@ def Load_results(instance):
             instance.bess_power_max.get_values()[str(i)])
         inst_inv_bess = inst_inv_bess + inv_bess_nominal_capacity
 
+    for i in range(1, HT_types + 1):
+        Number_HT = int(instance.ht_units.get_values()[str(i)])
+        ht_nominal_capacity = float(
+            instance.ht_nominal_capacity.extract_values()[str(i)])
+        inst_hydro = inst_hydro + Number_HT*ht_nominal_capacity
+
     # Number_PV = int(instance.pv_units.get_values()[1])
     # Number_WT = int(instance.wt_units.get_values()[1])
     # Number_BESS=int(instance.bess_units.get_values()[1])
@@ -159,10 +168,7 @@ def Load_results(instance):
     om_cost = float(instance.OM_cost.get_values()[None])
     salvage_value = float(instance.salvage_value.get_values()[None])
 
-    inst_pv = Number_PV*pv_nominal_capacity
-    inst_wind = Number_WT*wt_nominal_capacity
-    inst_dg = Number_Generator*dg_nominal_capacity
-    inst_bess = Number_BESS*bess_nominal_capacity
+
     inst_inv = inst_inv_bess+inst_pv
 
     print('PV installed=' + str(inst_pv))
@@ -170,13 +176,14 @@ def Load_results(instance):
     print('diesel installed=' + str(inst_dg))
     print('bess installed=' + str(inst_bess))
     print('inv installed=' + str(inst_inv))
+    print('hydro installed=' + str(inst_hydro))
 
     print('initial investment='+str(init_cost))
     print('replacement cost='+str(rep_cost))
     print('OM cost='+str(om_cost))
     print('salvage value='+str(salvage_value))
 
-    return inst_pv, inst_wind, inst_dg, inst_bess, inst_inv, init_cost, \
+    return inst_pv, inst_wind, inst_dg,inst_hydro, inst_bess, inst_inv, init_cost, \
         rep_cost, om_cost, salvage_value, gen_energy, load_energy, dg_fuel
 
     '''
