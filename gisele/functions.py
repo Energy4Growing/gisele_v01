@@ -516,7 +516,8 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro
 
             else:
                 ht_avg = pd.DataFrame(index=range(24 * num_typ_days))
-                ht_avg[0] = 0
+                for i in range(len(input_michele['ht_nominal_capacity'])):
+                    ht_avg[i] = 0
                 input_michele['ht_max_units'][str(1)] = 0
 
 
