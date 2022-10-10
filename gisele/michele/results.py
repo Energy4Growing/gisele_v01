@@ -102,7 +102,7 @@ def Load_results(instance):
     WT_types = instance.wt_types.extract_values()[None]
     BESS_types = instance.bess_types.extract_values()[None]
     Generator_types = instance.dg_types.extract_values()[None]
-    HT_types = instance.ht_types.exctract_values()[None]
+    HT_types = instance.ht_types.extract_values()[None]
 
     inst_pv = 0
     inst_wind = 0
