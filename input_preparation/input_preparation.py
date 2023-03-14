@@ -65,17 +65,23 @@ def resample(raster, resolution,options):
     return data, profile
 
 def create_grid(crs,resolution,study_area):
-    ''' This function creates a grid of points, returning a geopanda dataframe. The input is the following:
+    ''' This function creates a grid of points, returning a geopandas dataframe. The input is the following:
     crs -> The preffered crs of the dataframe (according to the case study), input should be an integer.
     resolution -> The preffered resolution of the grid of points, input should be an integer.
     study_area -> This is a shapely polygon, that has to be in the preffered crs.
     '''
     # crs and resolution should be a numbers, while the study area is a polygon
     df = pd.DataFrame(columns=['X', 'Y'])
-    min_x=float(study_area.bounds['minx'])
-    min_y=float(study_area.bounds['miny'])
-    max_x=float(study_area.bounds['maxx'])
-    max_y = float(study_area.bounds['maxy'])
+    try:
+        min_x=float(study_area.bounds['minx'])
+        min_y=float(study_area.bounds['miny'])
+        max_x=float(study_area.bounds['maxx'])
+        max_y = float(study_area.bounds['maxy'])
+    except:
+        min_x = float(study_area.bounds[0])
+        min_y = float(study_area.bounds[1])
+        max_x = float(study_area.bounds[2])
+        max_y = float(study_area.bounds[3])
     # create one-dimensional arrays for x and y
     lon = np.arange(min_x, max_x, resolution)
     lat = np.arange(min_y, max_y, resolution)
