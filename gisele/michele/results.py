@@ -30,6 +30,18 @@ def Load_results(instance):
     res_tot = pd.DataFrame.from_dict(instance.total_power_res.get_values(), orient='index')
     dg_tot = pd.DataFrame.from_dict(instance.dg_power.get_values(), orient='index')
     ht_tot = pd.DataFrame.from_dict(instance.ht_power.get_values(), orient='index')
+    if len(ht_tot)>num_years*num_days*24: #in case there are turbines or more rivers we need to calculate the sum
+        HT_types = instance.ht_types.extract_values()[None]
+        ht_tot['order'] = [*range(1, len(ht_tot) + 1)]
+        new_values = []
+        for i in range(1,len(ht_tot),HT_types):
+            subset = ht_tot[ht_tot['order'].isin([*range(i,(i+HT_types))])]
+            tot_power = subset[0].values.sum()
+            new_values.append(tot_power)
+        ht_tot_new = dg_tot.copy()
+        ht_tot_new[0] = new_values
+    else:
+        ht_tot_new=ht_tot.copy()
     bess_disch = pd.DataFrame.from_dict(instance.bess_dis_power.get_values(), orient='index')
     bess_ch = pd.DataFrame.from_dict(instance.bess_ch_power.get_values(), orient='index')
     lost_load = pd.DataFrame.from_dict(instance.lost_load.get_values(), orient='index')
@@ -51,12 +63,28 @@ def Load_results(instance):
         res_y = 0.001 * h_weight * sum(res_tot.iloc[(y*num_days*24+h),0] for h in range(num_days*24))
         res_tot_y.append(res_y)
 
+    ht_tot_y = []  # list of yearly HYDRO dispatching [MWh]
+    for y in range(num_years):
+        ht_y = 0.001 * h_weight * sum(ht_tot_new.iloc[(y * num_days * 24 + h), 0] for h in range(num_days * 24))
+        ht_tot_y.append(ht_y)
+
     lost_load_tot_y=[] # list of yearly lost load [MWh]
     for y in range(num_years):
         lost_load_y = 0.001 * h_weight * sum(lost_load.iloc[(y*num_days*24+h),0] for h in range(num_days*24))
         lost_load_tot_y.append(lost_load_y)
 
-    gen_energy = sum(res_tot_y) + sum(dg_tot_y)
+    BESS_CH = []  # list of yearly lost load [MWh]
+    for y in range(num_years):
+        battery_charge = 0.001 * h_weight * sum(bess_ch.iloc[(y * num_days * 24 + h), 0] for h in range(num_days * 24))
+        BESS_CH.append(lost_load_y)
+
+    BESS_DIS = []  # list of yearly lost load [MWh]
+    for y in range(num_years):
+        battery_discharge = 0.001 * h_weight * sum(bess_disch.iloc[(y * num_days * 24 + h), 0] for h in range(num_days * 24))
+        BESS_DIS.append(battery_discharge)
+
+    gen_energy = sum(res_tot_y) + sum(dg_tot_y) + sum(ht_tot_y)
+    lost_energy = sum(lost_load_tot_y)
     load_energy = sum(load_tot_y)
     # graph on yearly dispatching of resources
     x=np.arange(1,num_years+1)
@@ -135,7 +163,7 @@ def Load_results(instance):
             instance.dg_nominal_capacity.extract_values()[str(i)])
         inst_dg = inst_dg + Number_Generator * dg_nominal_capacity
 
-    for i in range(1, BESS_types + 1):
+    for i in range(1, BESS_types + 1): #perhaps an error here? it seems like it doesn't take the sum of all bess, just the max
         Number_BESS = int(instance.bess_units.get_values()[str(i)])
         inv_bess_nominal_capacity = float(
             instance.bess_power_max.get_values()[str(i)])
@@ -184,7 +212,7 @@ def Load_results(instance):
     print('salvage value='+str(salvage_value))
 
     return inst_pv, inst_wind, inst_dg,inst_hydro, inst_bess, inst_inv, init_cost, \
-        rep_cost, om_cost, salvage_value, gen_energy, load_energy, dg_fuel
+        rep_cost, om_cost, salvage_value, gen_energy, load_energy, dg_fuel,lost_energy
 
     '''
     Number_Years = int(instance.project_duration.extract_values()[None]/8760)

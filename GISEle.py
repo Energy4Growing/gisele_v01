@@ -1567,7 +1567,8 @@ def microgrid_size(mg_sizing):
         for file in os.listdir('Output'):
             if file not in ('Datasets','Clusters','Grids','Branches'):
                 shutil.rmtree('Output/' + file, ignore_errors=True)
-        os.makedirs('Output/Microgrids')
+        if not os.path.exists('Output/Microgrids'):
+            os.makedirs('Output/Microgrids')
 
         geo_df_clustered = \
             gpd.read_file(r"Output/Clusters/geo_df_clustered.json")

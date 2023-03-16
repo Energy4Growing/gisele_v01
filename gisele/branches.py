@@ -226,9 +226,10 @@ def collateral(geo_df_clustered, geo_df, clusters_list,
         grid_resume.loc[i, 'Grid Length [km]'] = \
             grid_resume.loc[i, 'Collateral Length [km]'] + \
             grid_resume.loc[i, 'Branch Length [km]']
-        col.to_file("Collateral_" + str(i) + '.shp')
-        all_collateral = gpd.GeoDataFrame(pd.concat([all_collateral, col],
-                                                    sort=True))
+        if not col.empty:
+            col.to_file("Collateral_" + str(i) + '.shp')
+            all_collateral = gpd.GeoDataFrame(pd.concat([all_collateral, col],
+                                                        sort=True))
 
     all_collateral.crs = all_connections.crs = geo_df.crs
     if not all_collateral.empty:

@@ -7,6 +7,7 @@ def total_initial_investment(model):
     return  model.initial_investment== 0.001 * (
             +sum(model.dg_units[g]*model.dg_investment_cost[g] for g in model.dg) \
             +sum(model.ht_units[ht] * model.ht_investment_cost[ht] for ht in model.ht) \
+            +sum(model.ht_units[ht] * model.ht_connection_cost[ht] for ht in model.ht) \
             +sum(model.pv_units[p]*model.pv_investment_cost[p] for p in model.pv) \
             +sum(model.wt_units[w]*model.wt_investment_cost[w] for w in model.wt) \
             +sum(model.bess_units[b]*model.bess_investment_cost[b] for b in model.bess)
@@ -71,7 +72,6 @@ def dg_installed(model, g):
 # this constraint defines the maximum power produced by renewables
 def res_energy(model,h):
     return model.total_power_res[h] <= sum(model.pv_units[p]*model.input_pv_prod[h,p] for p in model.pv) + sum(model.wt_units[w]*model.input_wt_prod[h,w] for w in model.wt)
-
 # this constraints expresses the balance of the system
 def system_balance(model,h):
     return model.Load[h] == model.total_power_res[h] + sum(model.dg_power[h,g] for g in model.dg)+ sum(model.ht_power[h,ht]

@@ -381,8 +381,9 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro
         all_angles = pd.read_csv('Input/TiltAngles.csv')
         tilt_angle = abs(all_angles.loc[abs(all_angles['lat'] - lat).idxmin(),
                                         'opt_tilt'])
-        pv_prod = import_pv_data(lat, lon, tilt_angle)
-        wt_prod = import_wind_data(lat, lon, wt)
+        if cluster_n==0:
+            pv_prod = import_pv_data(lat, lon, tilt_angle)
+            wt_prod = import_wind_data(lat, lon, wt)
         utc = pv_prod.local_time[0]
         if type(utc) is pd.Timestamp:
             time_shift = utc.hour
@@ -446,12 +447,12 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro
                 try:
                     Branches = gpd.read_file('Output\Branches\Branch_' + str(cluster_n) + '.shp')
                     try:
-                        Collaterals = gpd.read_file('Output\Branches\Colleteral_' + str(cluster_n) + '.shp')
+                        Collaterals = gpd.read_file('Output\Branches\Collateral_' + str(cluster_n) + '.shp')
                     except:
                         Collaterals = gpd.GeoDataFrame()
                 except:
                     Branches = gpd.GeoDataFrame()
-                    Collaterals = gpd.read_file('Output\Branches\Colleteral_' + str(cluster_n) + '.shp')
+                    Collaterals = gpd.read_file('Output\Branches\Collateral_' + str(cluster_n) + '.shp')
 
                 grid = Branches.append(Collaterals)
                 buffer = grid.geometry.buffer(max_dist_ht).unary_union
@@ -486,6 +487,15 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro
                     ht_avg = pd.DataFrame(index=range(24 * num_typ_days))
                     max_riv = num_rivers
                 input_michele['ht_types'] = max_riv
+                input_michele['ht_nominal_capacity'] = {}
+                input_michele['ht_investment_cost']= {}
+                input_michele['ht_connection_cost']= {}
+                input_michele['ht_OM_cost']= {}
+                input_michele['ht_life']= {}
+                input_michele['ht_unav']= {}
+                input_michele['ht_P_min']= {}
+                input_michele['ht_efficiency']= {}
+                input_michele['ht_max_units']= {}
                 for i in range(max_riv):
 
                     dist = []
@@ -532,9 +542,8 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro
         wt_avg.to_csv(r'Output/Microgrids/average_profiles/wt_avg_' + str(cluster_n) + '.csv')
         pv_avg.to_csv(r'Output/Microgrids/average_profiles/pv_avg_' + str(cluster_n) + '.csv')
 
-
         inst_pv, inst_wind, inst_dg,inst_hydro, inst_bess, inst_inv, init_cost, \
-        rep_cost, om_cost, salvage_value, gen_energy, load_energy, emissions = \
+        rep_cost, om_cost, salvage_value, gen_energy, load_energy, emissions,lost_load = \
             start(load_profile_cluster, pv_avg, wt_avg,input_michele,ht_avg)
 
         mg.loc[cluster_n, 'PV [kW]'] = inst_pv
@@ -551,6 +560,8 @@ def sizing(load_profile, clusters_list, geo_df_clustered, wt, years,rivers,hydro
         mg.loc[cluster_n, 'Energy Demand [MWh]'] = load_energy
         mg.loc[cluster_n, 'LCOE [€/kWh]'] = (
                                                     rep_cost + om_cost + init_cost-salvage_value) / gen_energy
+        mg.loc[cluster_n, 'Salvage cost [€/kWh]'] =salvage_value
+        mg.loc[cluster_n, 'Lost load [MWh'] = lost_load
         print(mg)
     mg = mg.round(decimals=4)
     mg.to_csv('Output/Microgrids/microgrids.csv', index_label='Cluster')
